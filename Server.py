@@ -41,14 +41,7 @@ def handler_client_connection(client_connection,client_address):
         #     time.sleep(0.1)
         data_recevived = client_connection.recv(9999999999)
         print('Data received.')
-        # Decodifica el Request
-        # try:
-        #     remote_string = str(data_recevived.decode(constants.ENCONDING_FORMAT)).split('\r\n\r\n') 
-        #     header = remote_string[0].decode(constants.ENCONDING_FORMAT)
-        #     data = remote_string[1].decode(constants.ENCONDING_FORMAT)
-        # except:
         remote_string = data_recevived.split(b'\r\n\r\n') 
-        print(len(remote_string))
         header = remote_string[0].decode(constants.ENCONDING_FORMAT)
         if len(remote_string) > 1:
             data = remote_string[1]
@@ -66,7 +59,6 @@ def handler_client_connection(client_connection,client_address):
             client_connection.sendall(response)
             is_connected = False
         elif (command == constants.POST):
-            print('Metodo Post')
             response = methods.post(header, data)
             #client_connection.sendall(response.encode(constants.ENCONDING_FORMAT))
             client_connection.sendall(response)

@@ -47,6 +47,7 @@ def parseo_recursivo(referencias, host, port, position):
             
         request = request.encode()
         client_socket.send(request)
+        client_socket.send(b'')
         response = b""
         while True:
             datos = client_socket.recv(constants.RECV_BUFFER_SIZE)
@@ -167,8 +168,8 @@ def main():
         referencias = re.findall("\s(?:src|href)(?:=\")([a-zA-Z0-9._/-]+?)\"", response_content)
         # Elimina repetidos
         referencias = list(dict.fromkeys(referencias))
-        print('refs wto rep: ', referencias)
-        print('position: ', position)
+        print('Reference list: ', referencias)
+        print('Position: ', position)
         #position = '.'
         parseo_recursivo(referencias, host, port, position)
     elif choosen_method == 2:

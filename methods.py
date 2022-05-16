@@ -84,6 +84,7 @@ def post(r_header, data):
     try:
         # Lee en formato byte
         file = open(myfile, 'wb')
+        print(f'Writing {len(data)}b of data')
         file.write(data)
         file.close()
 
