@@ -109,6 +109,7 @@ def post(r_header, data):
     print(' '*21, 'RESPONSE', ' '*21)
     
     final_response = header.encode('utf-8')
+    print(f'Header: {header}')
     return final_response
 
 def head(r_header, r_data):

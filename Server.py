@@ -55,17 +55,15 @@ def handler_client_connection(client_connection,client_address):
         
         if (command == constants.GET):
             response = methods.get(header, data)
-            #client_connection.sendall(response.encode(constants.ENCONDING_FORMAT))
             client_connection.sendall(response)
             is_connected = False
         elif (command == constants.POST):
             response = methods.post(header, data)
-            #client_connection.sendall(response.encode(constants.ENCONDING_FORMAT))
+            print(f'Response {response}')
             client_connection.sendall(response)
             is_connected = False
         elif (command == constants.HEAD):
             response = methods.head(header, data)
-            #client_connection.sendall(response.encode(constants.ENCONDING_FORMAT))
             client_connection.sendall(response)
             is_connected = False
         

@@ -89,6 +89,7 @@ def main():
     client_socket.connect((host, port))
     local_tuple = client_socket.getsockname()
     print('Connected to the server from:', local_tuple)
+    socket.setdefaulttimeout(15)
 
     # CHOOSING HTTP METHOD
     choosen_method = int(input('Choose a method using its number:\n1. GET\n2. POST\n3. HEAD\n> '))
@@ -131,6 +132,7 @@ def main():
     if choosen_method == 2:
         request += file_data    # REQUEST CONTENT (POST METHOD)
     client_socket.send(request)
+    # client_socket.send('\r\n\r\n\r\n\r\n')
 
     # RECEIVING RESPONSE
     file_name = file_type = ''    
