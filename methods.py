@@ -101,16 +101,14 @@ def post(r_header, data):
         mimetype = 'text/html'
         header += 'Content-Type: ' + str(mimetype) + '\r\n\r\n'
 
-        response = '<html><body>Error 201: OK</body></html>'
+        #response = '<html><body>201: OK</body></html>'
     except Exception as e:
         header = 'HTTP/1.1 403 Forbidden \r\n\r\n'
-        response = '<html><body>Error 403: Forbidden</body></html>'
+        #response = '<html><body>Error 403: Forbidden</body></html>'
 
     print(' '*21, 'RESPONSE', ' '*21)
     
-    final_response = header + response
-    print(final_response)
-    final_response =final_response.encode('utf-8')
+    final_response = header.encode('utf-8')
     return final_response
 
 def head(r_header, r_data):
