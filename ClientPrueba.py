@@ -2,6 +2,7 @@
     # Project: Client-Server using API Socket
     # Course: ST0255 - Telemática
     # TCP-Socket Client
+    # By Simon Correa Henao
 # ********************************************************************************************
 
 #Import libraries for networking communication...
@@ -131,11 +132,15 @@ def main():
             break
         response = response + datos
         time.sleep(0.1)
-    
+    print('Data received.')
+    response_splitted = response.split(b"\r\n\r\n")
+    response_headers = response_splitted[0].decode(constants.ENCONDING_FORMAT)
+    response_content = response_splitted[1]
     if choosen_method == 1:
         # Obtain host and file name
         hostname = host
-
+        match = re.search(r"^Content-Type:\s(\w+/\w+).*$", response_headers, re.MULTILINE)
+        mimetype = match.group(1)
         file_name = resource.rsplit('/', 1)    # Split the filename from its path
         file_name = file_name[len(file_name)-1]
         position = file_name
@@ -178,9 +183,7 @@ def main():
         pass
     else:
         print(f'File {file_name} saved in local')
-    #print_response(response.decode(constants.ENCONDING_FORMAT))
-    #print(response.split(b"\r\n\r\n")[0].decode(constants.ENCONDING_FORMAT))
-    #print(response)
+
 
 if __name__ == '__main__':
     main()
