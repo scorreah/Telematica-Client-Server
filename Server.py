@@ -60,7 +60,6 @@ def handler_client_connection(client_connection,client_address):
             is_connected = False
         elif (command == constants.POST):
             response = methods.post(header, data)
-            print(f'Response {response}')
             client_connection.sendall(response)
             is_connected = False
         elif (command == constants.HEAD):

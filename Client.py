@@ -48,7 +48,7 @@ def parseo_recursivo(referencias, host, port, position):
             
         request = request.encode()
         client_socket.send(request)
-        client_socket.send(b'')
+        client_socket.send(b'\r\n\r\n\r\n\r\n')
         response = b""
         while True:
             datos = client_socket.recv(constants.RECV_BUFFER_SIZE)
@@ -89,7 +89,6 @@ def main():
     client_socket.connect((host, port))
     local_tuple = client_socket.getsockname()
     print('Connected to the server from:', local_tuple)
-    socket.setdefaulttimeout(15)
 
     # CHOOSING HTTP METHOD
     choosen_method = int(input('Choose a method using its number:\n1. GET\n2. POST\n3. HEAD\n> '))
@@ -97,18 +96,16 @@ def main():
         method = constants.GET
     elif choosen_method == 2:
         method = constants.POST
-        post_type = int(input('What would you like to submit?\r\n1. Json\r\n2. File\r\n> '))
-        if post_type == 2:
-            content_type = 'multipart/form-data'
-            file_path = input('Please specify the relative path of the file: ')
-            try:
-                print(f'File loading: {file_path}')
-                file = open(file_path, 'rb')
-                file_data = file.read()
-                file_len = len(file_data)
-                file.close()
-            except Exception:
-                print(Exception)
+        content_type = 'multipart/form-data'
+        file_path = input('Please specify the relative path of the file: ')
+        try:
+            print(f'File loading: {file_path}')
+            file = open(file_path, 'rb')
+            file_data = file.read()
+            file_len = len(file_data)
+            file.close()
+        except Exception:
+            print(Exception)
     elif choosen_method == 3:
         method = constants.HEAD
     else:
@@ -121,6 +118,7 @@ def main():
     if choosen_method == 1:
         request = f'{method} {resource} HTTP/1.1\r\nHost: {host}:{port}\r\nConnection: keep-alive\r\n\r\n'
     elif choosen_method == 2:
+        socket.setdefaulttimeout(15)
         request = f'{method} {resource} HTTP/1.1\r\nHost: {host}:{port}\r\nConnection: keep-alive\r\n'
         request += f'Content-Type: {content_type};\r\nContent-length: {file_len}\r\n\r\n'
     else:
