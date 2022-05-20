@@ -80,6 +80,7 @@ def get():
 
 
 def main():
+    # ESTABLISH SOCKET CONNECTION
     print('***********************************')
     print('Client is running...')
     message = 'Enter the host and port you want to connect\nseparated by space:\n> '
@@ -88,6 +89,8 @@ def main():
     client_socket.connect((host, port))
     local_tuple = client_socket.getsockname()
     print('Connected to the server from:', local_tuple)
+
+    # CHOOSING HTTP METHOD
     choosen_method = int(input('Choose a method using its number:\n1. GET\n2. POST\n3. HEAD\n> '))
     if choosen_method == 1:
         method = constants.GET
@@ -109,8 +112,11 @@ def main():
         method = constants.HEAD
     else:
         method = 'ERROR'
+    
+    # RESOURCE OF THE REQUEST
     resource = input('Please specify the resource you require:\n> ')
 
+    # BUILDING HTTP REQUEST
     if choosen_method == 1:
         request = f'{method} {resource} HTTP/1.1\r\nHost: {host}:{port}\r\nConnection: keep-alive\r\n\r\n'
     elif choosen_method == 2:
@@ -119,12 +125,15 @@ def main():
     else:
         request = f'{method} {resource} HTTP/1.1\r\nHost: {host}:{port}\r\nConnection: keep-alive\r\n\r\n'
 
-    file_name = file_type = ''    
+    # SENDING AND PRINTING REQUEST
     print_request(request)
-    request = request.encode()
+    request = request.encode() #REQUEST HEADER
     if choosen_method == 2:
-        request += file_data
+        request += file_data    # REQUEST CONTENT (POST METHOD)
     client_socket.send(request)
+
+    # RECEIVING RESPONSE
+    file_name = file_type = ''    
     response = b""
     while True:
         datos = client_socket.recv(constants.RECV_BUFFER_SIZE)
@@ -133,19 +142,24 @@ def main():
         response = response + datos
         time.sleep(0.1)
     print('Data received.')
+
+    # PRINTING AND PROCESSING RESPONSE
     response_splitted = response.split(b"\r\n\r\n")
     response_headers = response_splitted[0].decode(constants.ENCONDING_FORMAT)
     response_content = response_splitted[1]
-    if choosen_method == 1:
-        # Obtain host and file name
+    if choosen_method == 1: # GET
+        # Obtaining host and file name
         hostname = host
+        # Processing Content-Type
         match = re.search(r"^Content-Type:\s(\w+/\w+).*$", response_headers, re.MULTILINE)
         mimetype = match.group(1)
+        print(f'Mimetype: {mimetype}')
+        # Processing file path and name
         file_name = resource.rsplit('/', 1)    # Split the filename from its path
         file_name = file_name[len(file_name)-1]
         position = file_name
         print(file_name)
-        if file_name == '/' or file_name == '':
+        if file_name == '/' or file_name == '' and mimetype == 'text/html':
             position = '/'
             file_name = 'index.html'
             file_type = 'html'
@@ -164,18 +178,18 @@ def main():
 
 
     client_socket.close()
-
-    response_headers = response.split(b"\r\n\r\n")[0].decode(constants.ENCONDING_FORMAT)
+    # 
     print(response_headers+'\r\n\r\n')
     if choosen_method == 1 and file_type == 'html' or file_type == 'txt':
-        response_content = response.split(b"\r\n\r\n")[1].decode(constants.ENCONDING_FORMAT)
+        # PARSEO HTML
+        response_content = response_content.decode(constants.ENCONDING_FORMAT)
         print(response_content)
+        # Busqueda de referencias con Regex
         referencias = re.findall("\s(?:src|href)(?:=\")([a-zA-Z0-9._/-]+?)\"", response_content)
         # Elimina repetidos
         referencias = list(dict.fromkeys(referencias))
         print('Reference list: ', referencias)
         print('Position: ', position)
-        #position = '.'
         parseo_recursivo(referencias, host, port, position)
     elif choosen_method == 2:
         print(f'Data sent to {host}{resource}')
