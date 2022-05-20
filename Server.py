@@ -39,7 +39,7 @@ def handler_client_connection(client_connection,client_address):
         #         break
         #     data_recevived = data_recevived + datos
         #     time.sleep(0.1)
-        data_recevived = client_connection.recv(9999999999)
+        data_recevived = client_connection.recv(999999999)
         print('Data received.')
         remote_string = data_recevived.split(b'\r\n\r\n') 
         header = remote_string[0].decode(constants.ENCONDING_FORMAT)
