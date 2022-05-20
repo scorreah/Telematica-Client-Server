@@ -64,7 +64,7 @@ def handler_client_connection(client_connection,client_address):
             client_connection.sendall(response)
             is_connected = False
         elif (command == constants.HEAD):
-            response = methods.post(header, data)
+            response = methods.head(header, data)
             #client_connection.sendall(response.encode(constants.ENCONDING_FORMAT))
             client_connection.sendall(response)
             is_connected = False
