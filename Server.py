@@ -33,13 +33,14 @@ def handler_client_connection(client_connection,client_address):
     while is_connected:
         # Mensaje de Request
         data_recevived = b''
-        # while True:
-        #     datos = client_connection.recv(constants.RECV_BUFFER_SIZE)
-        #     if (len(datos) < 2):
-        #         break
-        #     data_recevived = data_recevived + datos
-        #     time.sleep(0.1)
-        data_recevived = client_connection.recv(999999999)
+        while True:
+            datos = client_connection.recv(constants.RECV_BUFFER_SIZE)
+            if (len(datos.split(b'\r\n\r\n\r\n\r\n')) > 1):
+                data_recevived = data_recevived + datos.split(b'\r\n\r\n\r\n\r\n')[0]
+                break
+            data_recevived = data_recevived + datos
+            time.sleep(0.1)
+        # data_recevived = client_connection.recv(999999999)
         print('Data received.')
         remote_string = data_recevived.split(b'\r\n\r\n') 
         header = remote_string[0].decode(constants.ENCONDING_FORMAT)

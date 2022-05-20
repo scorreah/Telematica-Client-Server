@@ -132,7 +132,7 @@ def main():
     if choosen_method == 2:
         request += file_data    # REQUEST CONTENT (POST METHOD)
     client_socket.send(request)
-    # client_socket.send('\r\n\r\n\r\n\r\n')
+    client_socket.send(b'\r\n\r\n\r\n\r\n')
 
     # RECEIVING RESPONSE
     file_name = file_type = ''    
